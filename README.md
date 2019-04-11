@@ -6,9 +6,9 @@ and different sorted data.
 Example of expirement:
 |           | Size 1 | size 2 | size 3 | 
 |---        |---     |---     |---     |
-|ordering 1 |        |        |        |
-|ordering 2 |        |        |        |
-|ordering 3 |        |        |        |
+|ordering 1 |    v    |    v    |    v    |
+|ordering 2 |    v    |    v    |    v    |
+|ordering 3 |    v    |    v    |    v    |
 
 ## Build the Development Environment
 To create your python environment simply run
