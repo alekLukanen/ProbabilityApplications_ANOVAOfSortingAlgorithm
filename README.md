@@ -1,5 +1,14 @@
-# Application name here
-Description of application goes here...
+# AVOVA Project for Selection Sort
+Using the same implementation of Selection Sort attempt
+to find a difference in runtimes for different size arrays
+and different sorted data.
+
+Example of expirement:
+|           | Size 1 | size 2 | size 3 | 
+|---        |---     |---     |---     |
+|ordering 1 |        |        |        |
+|ordering 2 |        |        |        |
+|ordering 3 |        |        |        |
 
 ## Build the Development Environment
 To create your python environment simply run
