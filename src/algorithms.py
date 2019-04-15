@@ -2,6 +2,7 @@
 import random
 import pandas as pd
 import numba
+import time
 
 '''
 @numba.jit(nopython=True)
@@ -24,6 +25,7 @@ def timsort(li):
 
 def time_timsort_sort(sizes, number_of_tries=10, module='__main__'):
     import timeit
+    import time
     data = {'size': [],
             'original_sorting': [],
             'time': []
@@ -35,55 +37,63 @@ def time_timsort_sort(sizes, number_of_tries=10, module='__main__'):
 
         for _ in range(0, number_of_tries):
             print(f'-- sorting a random normal list of size {size}: ')
-            time = timeit.timeit(f'timsort(li)', 
-                setup=f"from {module} import timsort, create_random_normal_list; li = create_random_normal_list({size})", number=1)
+            timeX = timeit.timeit(f'timsort(li)', 
+                setup=f"from {module} import timsort, create_random_normal_list; li = create_random_normal_list({size})", timer=time.process_time, number=1)
             data['size'].append(size)
             data['original_sorting'].append('normal(0,1)')
-            data['time'].append(time)
+            data['time'].append(timeX)
 
-            print('--', time)
+            print('--', timeX)
 
         for _ in range(0, number_of_tries):
             print(f'-- sorting a uniform random list of size {size}: ')
-            time = timeit.timeit(f'timsort(li)',
-                setup=f"from {module} import timsort, create_randomized_list; li = create_randomized_list({size})", number=1)
+            timeX = timeit.timeit(f'timsort(li)',
+                setup=f"from {module} import timsort, create_randomized_list; li = create_randomized_list({size})", timer=time.process_time, number=1)
             data['size'].append(size)
             data['original_sorting'].append('uniform(0,1)')
-            data['time'].append(time)
+            data['time'].append(timeX)
 
-            print('--', time)
+            print('--', timeX)
 
         for _ in range(0, number_of_tries):
             print(f'-- sorting a gamma random list of size {size}: ')
-            time = timeit.timeit(f'timsort(li)',
-                setup=f"from {module} import timsort, create_random_gamma_list; li = create_random_gamma_list({size})", number=1)
+            timeX = timeit.timeit(f'timsort(li)',
+                setup=f"from {module} import timsort, create_random_gamma_list; li = create_random_gamma_list({size})", timer=time.process_time, number=1)
             data['size'].append(size)
             data['original_sorting'].append('gamma(1,1)')
-            data['time'].append(time)
+            data['time'].append(timeX)
 
-            print('--', time)
+            print('--', timeX)
 
         for _ in range(0, number_of_tries):
             print(f'-- sorting a sorted list of size {size}: ')
-            time = timeit.timeit(f'timsort(li)', 
-                setup=f"from {module} import timsort, create_sorted_list; li = create_sorted_list({size})", number=1)
+            timeX = timeit.timeit(f'timsort(li)', 
+                setup=f"from {module} import timsort, create_sorted_list; li = create_sorted_list({size})", timer=time.process_time, number=1)
             data['size'].append(size)
             data['original_sorting'].append('sorted')
-            data['time'].append(time)
+            data['time'].append(timeX)
 
-            print('--', time)
+            print('--', timeX)
 
         for _ in range(0, number_of_tries):
             print(f'-- sorting a reversed list: of size {size}: ')
-            time = timeit.timeit(f'timsort(li)',
-                setup=f"from {module} import timsort, create_reversed_list; li = create_reversed_list({size})", number=1)
+            timeX = timeit.timeit(f'timsort(li)',
+                setup=f"from {module} import timsort, create_reversed_list; li = create_reversed_list({size})", timer=time.process_time, number=1)
             data['size'].append(size)
             data['original_sorting'].append('reversed')
-            data['time'].append(time)
+            data['time'].append(timeX)
 
-            print('--', time)
+            print('--', timeX)
 
     return pd.DataFrame(data=data)
+
+
+def create_uniform_random_walk(length):
+    start = 0.0
+    walk = [start]
+    for i in range(1,length):
+        walk.append(walk[i-1]+random.uniform(-1.0,1.0))
+    return walk
 
 
 def create_sorted_list(size):
