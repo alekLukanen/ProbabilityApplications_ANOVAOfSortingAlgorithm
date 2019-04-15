@@ -3,7 +3,7 @@ import random
 import pandas as pd
 import numba
 
-
+'''
 @numba.jit(nopython=True)
 def selection_sort(li):
     for i in range(0,len(li)):
@@ -15,23 +15,58 @@ def selection_sort(li):
         li[current_smallest_index] = li[i]
         li[i] = smallest_value
     return li
+'''
+
+def timsort(li):
+    li.sort()
+    return li
 
 
-def time_selection_sort(sizes, number_of_tries=10, module='__main__'):
+def time_timsort_sort(sizes, number_of_tries=10, module='__main__'):
     import timeit
     data = {'size': [],
             'original_sorting': [],
             'time': []
            }
     for size in sizes:
-        print(f'- SIZE: {size}')
+        print(f'- CHANED TO SIZE: {size}')
 
-        selection_sort([1])
+        #selection_sort([1])
 
         for _ in range(0, number_of_tries):
-            print('-- sorting a sorted list: ')
-            time = timeit.timeit(f'selection_sort(li)', 
-                setup=f"from {module} import selection_sort, create_sorted_list; li = create_sorted_list({size})", number=1)
+            print(f'-- sorting a random normal list of size {size}: ')
+            time = timeit.timeit(f'timsort(li)', 
+                setup=f"from {module} import timsort, create_random_normal_list; li = create_random_normal_list({size})", number=1)
+            data['size'].append(size)
+            data['original_sorting'].append('normal(0,1)')
+            data['time'].append(time)
+
+            print('--', time)
+
+        for _ in range(0, number_of_tries):
+            print(f'-- sorting a uniform random list of size {size}: ')
+            time = timeit.timeit(f'timsort(li)',
+                setup=f"from {module} import timsort, create_randomized_list; li = create_randomized_list({size})", number=1)
+            data['size'].append(size)
+            data['original_sorting'].append('uniform(0,1)')
+            data['time'].append(time)
+
+            print('--', time)
+
+        for _ in range(0, number_of_tries):
+            print(f'-- sorting a gamma random list of size {size}: ')
+            time = timeit.timeit(f'timsort(li)',
+                setup=f"from {module} import timsort, create_random_gamma_list; li = create_random_gamma_list({size})", number=1)
+            data['size'].append(size)
+            data['original_sorting'].append('gamma(1,1)')
+            data['time'].append(time)
+
+            print('--', time)
+
+        for _ in range(0, number_of_tries):
+            print(f'-- sorting a sorted list of size {size}: ')
+            time = timeit.timeit(f'timsort(li)', 
+                setup=f"from {module} import timsort, create_sorted_list; li = create_sorted_list({size})", number=1)
             data['size'].append(size)
             data['original_sorting'].append('sorted')
             data['time'].append(time)
@@ -39,19 +74,9 @@ def time_selection_sort(sizes, number_of_tries=10, module='__main__'):
             print('--', time)
 
         for _ in range(0, number_of_tries):
-            print('-- sorting a randomized list: ')
-            time = timeit.timeit(f'selection_sort(li)',
-                setup=f"from {module} import selection_sort, create_randomized_list; li = create_randomized_list({size})", number=1)
-            data['size'].append(size)
-            data['original_sorting'].append('randomized')
-            data['time'].append(time)
-
-            print('--', time)
-
-        for _ in range(0, number_of_tries):
-            print('-- sorting a reversed list: ')
-            time = timeit.timeit(f'selection_sort(li)',
-                setup=f"from {module} import selection_sort, create_reversed_list; li = create_reversed_list({size})", number=1)
+            print(f'-- sorting a reversed list: of size {size}: ')
+            time = timeit.timeit(f'timsort(li)',
+                setup=f"from {module} import timsort, create_reversed_list; li = create_reversed_list({size})", number=1)
             data['size'].append(size)
             data['original_sorting'].append('reversed')
             data['time'].append(time)
@@ -62,14 +87,15 @@ def time_selection_sort(sizes, number_of_tries=10, module='__main__'):
 
 
 def create_sorted_list(size):
-    return [i for i in range(0, size)]
+    return [i/(size*1.0) for i in range(0, size)]
 
 
 def create_reversed_list(size):
-    return [i for i in range(size, 0, -1)]
+    return [i/(size*1.0) for i in range(size, 0, -1)]
 
 
 def create_randomized_list(size):
+    '''
     original_list = create_sorted_list(size)
     new_list = []
     for i in range(0, len(original_list)):
@@ -77,14 +103,21 @@ def create_randomized_list(size):
         new_list.append(original_list[index])
         del original_list[index]
     return new_list
+    '''
+    return [random.uniform(0.0, 1.0) for i in range(0, size)]
+
+
+def create_random_normal_list(size):
+    return [random.normalvariate(0.0, 1.0) for i in range(0, size)]
+
+
+def create_random_gamma_list(size):
+    return [random.gammavariate(1.0, 1.0) for i in range(0, size)]
 
 
 if __name__ == '__main__':
     print('--- algorithms.py ---')
-    list_sizes = [10000,20000,30000]
+    list_sizes = [1_000_000, 2_000_000, 3_000_000]
     runs = 35
-    data = time_selection_sort(list_sizes, number_of_tries=runs)
+    data = time_timsort_sort(list_sizes, number_of_tries=runs)
     data.to_csv('data.csv', index=False)
-
-    a = selection_sort(create_reversed_list(10))
-    print(a)

@@ -7,9 +7,14 @@ Example of expirement:
 
 |           | Size 1 | size 2 | size 3 | 
 |---        |---     |---     |---     |
-|ordering 1 |    v    |    v    |    v    |
-|ordering 2 |    v    |    v    |    v    |
-|ordering 3 |    v    |    v    |    v    |
+|Sequence 1 |    v    |    v    |    v    |
+|Sequence 2 |    v    |    v    |    v    |
+|Sequence 3 |    v    |    v    |    v    |
+
+## Links
+
+* Sorting data of known distribution: https://stackoverflow.com/questions/6166546/sorting-algorithms-for-data-of-known-statistical-distribution
+* Probability sorting: http://www.cs.rochester.edu/~cding/Documents/Publications/icpp04.pdf
 
 ## Build the Development Environment
 To create your python environment simply run
