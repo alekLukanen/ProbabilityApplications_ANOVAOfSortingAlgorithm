@@ -5,24 +5,76 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(mosaic)
+library(tidyverse)
 ```
 
-## R Markdown
+## Analysis and Discussion
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+```{r}
+data <- read.csv("C:/Users/space/repo/ProbabilityApplications_ANOVAOfSortingAlgorithm/src/data.csv")
+data %>% head(5)
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r}
+data$size[data$size==1000000] <- 'small'
+data$size[data$size=='2000000'] <- 'medium'
+data$size[data$size=='3000000'] <- 'large'
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+```{r}
+data['original_sorting'] %>% unique()
+```
+
+
+```{r}
+data <- data %>%
+  filter(original_sorting %in% c('normal(0,1)', 'uniform(0,1)', 'gamma(1,1)'))
+```
+
+
+```{r}
+anova.base <- aov(time ~ size + original_sorting, data = data)
+summary(anova.base)
+```
+
+
+```{r}
+anova.interaction <- aov(time ~ size * original_sorting, data = data)
+summary(anova.interaction)
+```
+
+
+
+```{r}
+mean(time ~ size + original_sorting, data = data)
+```
+
+
+```{r}
+qplot(anova.base$fitted.values,anova.base$residuals) + 
+  geom_hline(yintercept = 0, color = "darkgreen")
+
+ggplot() +
+  geom_qq(aes(sample=anova.base$residuals)) + 
+  geom_qq_line(aes(sample=anova.base$residuals))
+
+qplot(anova.base$residuals,geom = "histogram", bins=15)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
