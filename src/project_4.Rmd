@@ -124,11 +124,11 @@ The Anova indicates that there is a difference in mean runtime for small, medium
 
 ## Works Cited
 
-[1] 
+[1] Lukanen, Aleksandr. Github. 2019. https://github.com/alekLukanen/ProbabilityApplications_ANOVAOfSortingAlgorithm
 
-[2]
+[2] (Python's timsort implementation) https://github.com/python/cpython/blob/master/Objects/listsort.txt
 
-[3]
+[3] (timsort explanation) https://en.wikipedia.org/wiki/Timsort
 
 
 
