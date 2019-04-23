@@ -1,15 +1,8 @@
-# AVOVA Project for Selection Sort
-Using the same implementation of Selection Sort attempt
-to find a difference in runtimes for different size arrays
-and different sorted data.
+# AVOVA Project for Timsort
 
-Example of expirement:
+A simple project to test Python's `sort()` function under various conditions. A full factorial design is created using list lengths of 1000000, 2000000 and 3000000 along with randomly generated starting lists created using several probability distributions. 
 
-|           | Size 1 | size 2 | size 3 | 
-|---        |---     |---     |---     |
-|Sequence 1 |    v    |    v    |    v    |
-|Sequence 2 |    v    |    v    |    v    |
-|Sequence 3 |    v    |    v    |    v    |
+The file `project_4.Rmd` conttains an analysis of the data.
 
 ## Links
 
