@@ -1,5 +1,5 @@
 ---
-title: "project_4"
+title: "Performce of Python's Base Sorting Function"
 output: html_document
 ---
 
@@ -10,13 +10,32 @@ library(mosaic)
 library(tidyverse)
 ```
 
-## Analysis and Discussion
+## Introduction
+
+
+
+## Methods
+
+
+
+## Analysis
+
+To begin lets read in the data and print out a few examples of the items in the table.
 
 ```{r}
 data <- read.csv("C:/Users/space/repo/ProbabilityApplications_ANOVAOfSortingAlgorithm/src/data.csv")
 data %>% head(5)
 ```
 
+This dataframe shows that the size variable is an integer which is a problem since this analysis is focused on performing a Anova not a linear regression. To fix this simply change the integers to strings. Here is a table of the mapping
+
+| Size | New Size Value |
+|---  |--- |
+| 1,000,000 | "small" |
+| 2,000,000 | "medium" |
+| 3,000,000 | "large" |
+
+And in R this mapping can be performed in the following manner.
 
 ```{r}
 data$size[data$size==1000000] <- 'small'
@@ -24,48 +43,92 @@ data$size[data$size=='2000000'] <- 'medium'
 data$size[data$size=='3000000'] <- 'large'
 ```
 
+Changing `1000000` to "small" forces the entire column to be a string thus the rest of the numbers need to begin in quotes to perform the correct mapping. 
+
+There are five unique starting sortings. They are listed in the table below.
 
 ```{r}
 data['original_sorting'] %>% unique()
 ```
 
+Since this study is only concerned with sorting lists that start with elements that are independently drawn from some probability distribution the last two sortings can be removed. Thus, `sorted` and `reversed` can be removed as these would throw off the results of this study. But those results can still be helpful when assessing the worst case runtime of timsort. 
 
 ```{r}
 data <- data %>%
   filter(original_sorting %in% c('normal(0,1)', 'uniform(0,1)', 'gamma(1,1)'))
 ```
 
-
-```{r}
-anova.base <- aov(time ~ size + original_sorting, data = data)
-summary(anova.base)
-```
-
+At this point the data has been formatted and cleaned to suit the purposes of this study. The rest of the code will perform the analysis. First perform the Anova that checks for a difference in time based on size and original sorting and any combination of the two.
 
 ```{r}
 anova.interaction <- aov(time ~ size * original_sorting, data = data)
 summary(anova.interaction)
 ```
 
-
+The summary of the Anova shows that there does not exist a difference in mean runtime for lists of different lengths and different original sortings. The next Anova does not include the interaction between the two. And this makes sense becuase we don't really need to know if there is a difference in mean runtime between algorthms of different lengths and different original sortings. 
 
 ```{r}
-mean(time ~ size + original_sorting, data = data)
+anova.base <- aov(time ~ size + original_sorting, data = data)
+summary(anova.base)
 ```
 
+The summary of the model indicates that there is a difference in mean runtime for lists of differing sizes. What this summary does not say is whether there exists a difference in mean runtime based solely on the lists original sorting. There is insufficient evidence to say whether or not there exists a difference in mean runtimes for lists of different original sortings. The last Anova only contains the size as a factor.
 
 ```{r}
-qplot(anova.base$fitted.values,anova.base$residuals) + 
+anova.size <- aov(time ~ size, data = data)
+summary(anova.size)
+```
+
+This final Anova shows that there is a difference in mean runtime for lists of different lengths. Now that we have our model we can perform a Tukeys HSD test on this model. Tukeys HSD performs multiple t-tests for a difference in mean with a p-value adjusted to compensate for the number of comparisons.
+
+```{r}
+TukeyHSD(anova.size)
+```
+
+And there is not really much of a suprise here; the mean runtime to sort each of the list sizes is different between each. From the output it is clear that a small list has the shortest runtime, medium the second shortest and large has the longest runtime.
+
+Checking the conditions it clear that the data is very skewed right as indicated by the histogram of the residuals. The problem is that the data was collected on a computer, so it consists of ideal and less than ideal results but there is never a better than ideal result. A computation can only run so fast before it hits a wall an can not longer go any faster; it can only be slower from there. Thus most runtime data will be skewed right. The other reason is that the data in the lists is random which should effect the runtime slightly.
+
+```{r}
+qplot(anova.size$fitted.values,anova.size$residuals) + 
   geom_hline(yintercept = 0, color = "darkgreen")
 
 ggplot() +
-  geom_qq(aes(sample=anova.base$residuals)) + 
-  geom_qq_line(aes(sample=anova.base$residuals))
+  geom_qq(aes(sample=anova.size$residuals)) + 
+  geom_qq_line(aes(sample=anova.size$residuals))
 
-qplot(anova.base$residuals,geom = "histogram", bins=15)
+qplot(anova.size$residuals,geom = "histogram", bins=15)
+```
+
+Here is a histogram of runtimes for a `large` list with original sorting of `normal(0,1)`. Notice how there is a cuttoff on the left side of the spectrum. I think that this is as fast as the sort is able to sort this list.
+
+```{r}
+data.LN01 <- data %>%
+  filter(size=='large', original_sorting=='normal(0,1)')
+
+ggplot(data=data.LN01) +
+  geom_histogram(aes(x=time), bins=10)
 ```
 
 
+
+## Discussion
+
+The Anova indicates that there is a difference in mean runtime for small, medium and large lengths; this is obvious though. What the Anova failed to prove is that there exists a difference in mean runtime for lists of the same length but with different original sortings. When I started out I thought that there would be a difference since I have been told in some computer science classes that the runtime of sorting algorithms is effected by the distribution the data is drawn from. It turns out this isn't the case, or at least I haven't shown that it is. I realize now that it would only make a difference if the elements in the list where conditionally related to one another. I should have created an expirement to test how well Python's Timsort is able to handle lists that are sorted conditionally based other elements in the list. What I should have done is attempt to find a difference in mean runtime for lists generated by a one dimensional random walk with transition probabilities given by various probability distributions. This would ensure that elements are conditionally related and would likely produce a difference in mean runtime between the various types of random walks. For instance a normal and a gamma random walk would likely produce a difference. The normal distribution is symetric while the gamma distribution is not.
+
+
+
+
+## Conclusions
+
+
+## Works Cited
+
+[1] 
+
+[2]
+
+[3]
 
 
 
