@@ -1,8 +1,8 @@
 # AVOVA Project for Timsort
 
-A simple project to test Python's `sort()` function under various conditions. A full factorial design is created using list lengths of 1000000, 2000000 and 3000000 along with randomly generated starting lists created using several probability distributions. 
+A simple project to test Python's `sort()` function under various conditions. A full factorial design is created using list lengths of 1000000, 2000000 and 3000000 along with randomly generated starting lists created using several probability distributions. Thus this expirment contains two factors: list length and original sorting (or lack there of).
 
-The file `project_4.Rmd` conttains an analysis of the data.
+The file `project_4.Rmd` contains an analysis of the data.
 
 ## Links
 
