@@ -10,6 +10,7 @@ library(mosaic)
 library(tidyverse)
 ```
 
+
 ## Introduction
 
 
@@ -43,7 +44,7 @@ data$size[data$size=='2000000'] <- 'medium'
 data$size[data$size=='3000000'] <- 'large'
 ```
 
-Changing `1000000` to "small" forces the entire column to be a string thus the rest of the numbers need to begin in quotes to perform the correct mapping. 
+Changing `1000000` to "small" forces the entire column to be a string thus the rest of the numbers need to begin in quotes to perform the correct mapping.
 
 There are five unique starting sortings. They are listed in the table below.
 
